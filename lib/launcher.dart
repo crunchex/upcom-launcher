@@ -14,10 +14,18 @@ class CmdrLauncher extends Tab {
 
   }
 
+  void _getTabsInfo(String s) {
+    mailbox.relay(Tab.upcomName, 1, new Msg('GET_TABS_INFO', '${CmdrLauncher.names[0]}:$id'));
+  }
+
+  void _sendTabsInfo(String s) {
+    print(s);
+    mailbox.send(new Msg('SEND_TABS_INFO', s));
+  }
+
   void registerMailbox() {
-//    mailbox.registerMessageHandler('MESSAGE_TO_LISTEN_FOR', _messageHandler);
-//
-//    mailbox.registerEndPointHandler('/$refName/$id/websocket_endpoint', _endpointHandler);
+    mailbox.registerMessageHandler('GET_TABS_INFO', _getTabsInfo);
+    mailbox.registerMessageHandler('SEND_TABS_INFO', _sendTabsInfo);
   }
 
   void cleanup() {

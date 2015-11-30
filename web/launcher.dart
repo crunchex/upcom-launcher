@@ -26,9 +26,10 @@ class UpDroidLauncher extends TabController {
 
   }
 
+  void _getTabsInfo(Msg m) => mailbox.ws.send('[[GET_TABS_INFO]]');
+
   void registerMailbox() {
-//    mailbox.registerWebSocketEvent(EventType.ON_OPEN, 'TAB_READY', _signalReady);
-//    mailbox.registerWebSocketEvent(EventType.ON_MESSAGE, 'DO_SOMETHING', _doSomething);
+    mailbox.registerWebSocketEvent(EventType.ON_OPEN, 'TAB_READY', _getTabsInfo);
   }
 
   void registerEventHandlers() {
