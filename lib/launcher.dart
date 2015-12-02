@@ -18,14 +18,21 @@ class CmdrLauncher extends Tab {
     mailbox.relay(Tab.upcomName, 1, new Msg('GET_TABS_INFO', '${CmdrLauncher.names[0]}:$id'));
   }
 
-  void _sendTabsInfo(String s) {
-    print(s);
-    mailbox.send(new Msg('SEND_TABS_INFO', s));
+  void _sendTabsInfo(String s) => mailbox.send(new Msg('SEND_TABS_INFO', s));
+
+  void _requestTab(String m) {
+    mailbox.relay(Tab.upcomName, -1, new Msg('REQUEST_TAB', '${names[0]}:$id:$m'));
+  }
+
+  void _requestFulfilled(String requestedTabId) {
+    // Empty callback.
   }
 
   void registerMailbox() {
     mailbox.registerMessageHandler('GET_TABS_INFO', _getTabsInfo);
     mailbox.registerMessageHandler('SEND_TABS_INFO', _sendTabsInfo);
+    mailbox.registerMessageHandler('REQUEST_TAB', _requestTab);
+    mailbox.registerMessageHandler('REQUEST_FULFILLED', _requestFulfilled);
   }
 
   void cleanup() {
