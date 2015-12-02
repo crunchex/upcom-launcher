@@ -5,25 +5,17 @@ import 'dart:html';
 import 'dart:convert';
 
 import 'package:upcom-api/web/mailbox/mailbox.dart';
-import 'package:upcom-api/web/tab/tab_controller.dart';
+import 'package:upcom-api/web/tab/launcher_controller.dart';
 
-class UpDroidLauncher extends TabController {
+class UpDroidLauncher extends LauncherController {
   static final List<String> names = ['upcom-launcher', 'UpDroid Launcher', 'Launcher'];
-
-  static List getMenuConfig() {
-    List menu = [
-      {'title': 'File', 'items': [
-        {'type': 'toggle', 'title': 'Close Tab'}]}
-    ];
-    return menu;
-  }
 
   DivElement _containerDiv, _resultsDiv;
   InputElement _searchInput;
   SpanElement _searchIcon;
 
   UpDroidLauncher() :
-  super(UpDroidLauncher.names, getMenuConfig(), 'tabs/upcom-launcher/launcher.css') {
+  super(UpDroidLauncher.names, 'tabs/upcom-launcher/launcher.css') {
 
   }
 
@@ -48,17 +40,20 @@ class UpDroidLauncher extends TabController {
 
   void _receivedTabsInfo(Msg m) {
     Map<String, Map> tabsInfo = JSON.decode(m.body);
-    tabsInfo.keys.forEach((e) {
-      Map<String, String> tabInfo = tabsInfo[e];
+    // This loop is just for testing a long list.
+    for (int i = 0; i < 2; i++) {
+      tabsInfo.keys.forEach((e) {
+        Map<String, String> tabInfo = tabsInfo[e];
 
-      ButtonElement tabButton = new ButtonElement()
-        ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
-        ..classes.addAll(['btn-primary', '$refName-button'])
-        ..text = tabInfo['fullName'];
-      _resultsDiv.children.add(tabButton);
+        ButtonElement tabButton = new ButtonElement()
+          ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
+          ..classes.addAll(['btn-primary', '$refName-button'])
+          ..text = tabInfo['fullName'];
+        _resultsDiv.children.add(tabButton);
 
-      tabButton.onClick.listen((e) => _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', '')));
-    });
+        tabButton.onClick.listen((e) => _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', '')));
+      });
+    }
   }
 
   void _requestTab(String refName) {
