@@ -40,20 +40,20 @@ class UpDroidLauncher extends LauncherController {
 
   void _receivedTabsInfo(Msg m) {
     Map<String, Map> tabsInfo = JSON.decode(m.body);
-    // This loop is just for testing a long list.
-    for (int i = 0; i < 2; i++) {
-      tabsInfo.keys.forEach((e) {
-        Map<String, String> tabInfo = tabsInfo[e];
+    tabsInfo.keys.forEach((e) {
+      Map<String, String> tabInfo = tabsInfo[e];
 
-        ButtonElement tabButton = new ButtonElement()
-          ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
-          ..classes.addAll(['btn-primary', '$refName-button'])
-          ..text = tabInfo['fullName'];
-        _resultsDiv.children.add(tabButton);
+      ButtonElement tabButton = new ButtonElement()
+        ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
+        ..classes.addAll(['btn-primary', '$refName-button'])
+        ..text = tabInfo['fullName'];
+      _resultsDiv.children.add(tabButton);
 
-        tabButton.onClick.listen((e) => _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', '')));
+      tabButton.onClick.listen((e) {
+        e.preventDefault();
+        _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', ''));
       });
-    }
+    });
   }
 
   void _requestTab(String refName) {
