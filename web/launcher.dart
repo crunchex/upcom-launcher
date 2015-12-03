@@ -48,7 +48,16 @@ class UpDroidLauncher extends LauncherController {
       _setUpTabButton(tabInfo);
     }
 
-    _searchSub = _searchInput.onKeyUp.listen((e) => _handleSearch(_searchInput.value));
+    _searchSub = _searchInput.onKeyUp.listen((e) {
+      var keyEvent = new KeyEvent.wrap(e);
+      if (keyEvent.keyCode == KeyCode.ENTER) {
+        if (_tabResultsDiv.children.length == 1) {
+          _requestTab(_tabResultsDiv.children[0].id.replaceFirst('$refName-$id-tab-button-', ''));
+        }
+      } else {
+        _handleSearch(_searchInput.value);
+      }
+    });
 
     // Nice way to do a "forEach" and "then".
 //    Future.wait(_tabsInfo.values.map((Map<String, String> tabInfo) {
