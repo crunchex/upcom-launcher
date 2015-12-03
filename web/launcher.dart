@@ -55,7 +55,7 @@ class UpDroidLauncher extends LauncherController {
           _requestTab(_tabResultsDiv.children[0].id.replaceFirst('$refName-$id-tab-button-', ''));
         }
       } else {
-        _handleSearch(_searchInput.value);
+        _updateResults(_searchInput.value);
       }
     });
 
@@ -69,7 +69,7 @@ class UpDroidLauncher extends LauncherController {
 //    })).then((_) => _searchInput.onKeyUp.listen((e) => _handleSearch(_searchInput.value)));
   }
 
-  void _handleSearch(String query) {
+  void _updateResults(String query) {
     Map<String, Map> tabsInfo = new Map.from(_tabsInfo);
 
     for (String tabInfoKey in _tabsInfo.keys) {
@@ -96,7 +96,6 @@ class UpDroidLauncher extends LauncherController {
     if (_buttonListeners == null) _buttonListeners = [];
     _buttonListeners.add(tabButton.onClick.listen((e) {
       e.preventDefault();
-      _searchInput.value = '';
       _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', ''));
     }));
   }
@@ -116,6 +115,8 @@ class UpDroidLauncher extends LauncherController {
   }
 
   void _requestTab(String refName) {
+    _searchInput.value = '';
+    _updateResults('');
     mailbox.ws.send(new Msg('REQUEST_TAB', refName).toString());
   }
 
