@@ -90,7 +90,7 @@ class UpDroidLauncher extends LauncherController {
     ButtonElement tabButton = new ButtonElement()
       ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
       ..classes.addAll(['btn-primary', '$refName-button'])
-      ..text = tabInfo['fullName'];
+      ..text = tabInfo['shortName'];
     _tabResultsDiv.children.add(tabButton);
 
     if (_buttonListeners == null) _buttonListeners = [];
@@ -109,7 +109,7 @@ class UpDroidLauncher extends LauncherController {
     // }
 
     // Only search full name in lower case.
-    if (tabInfo['fullName'].toLowerCase().contains(query.toLowerCase())) result = true;
+    if (tabInfo['shortName'].toLowerCase().contains(query.toLowerCase())) result = true;
 
     return result;
   }
