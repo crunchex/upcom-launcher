@@ -26,7 +26,7 @@ class UpDroidLauncher extends LauncherController {
     _searchInput = new InputElement()
       ..id = '$refName-$id-search'
       ..classes.add('$refName-search')
-      ..placeholder = 'search tab name';
+      ..placeholder = 'Search';
     view.content.children.add(_searchInput);
 
     _searchIcon = new SpanElement()
