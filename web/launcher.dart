@@ -43,6 +43,7 @@ class UpDroidLauncher extends LauncherController {
 
   void _receivedTabsInfo(Msg m) {
     _tabsInfo = JSON.decode(m.body);
+    _tabsInfo.remove('upcom-launcher');
 
     for (Map<String, String> tabInfo in _tabsInfo.values) {
       _setUpTabButton(tabInfo);
