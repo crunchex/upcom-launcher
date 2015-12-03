@@ -87,6 +87,7 @@ class UpDroidLauncher extends LauncherController {
     if (_buttonListeners == null) _buttonListeners = [];
     _buttonListeners.add(tabButton.onClick.listen((e) {
       e.preventDefault();
+      _searchInput.value = '';
       _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', ''));
     }));
   }
