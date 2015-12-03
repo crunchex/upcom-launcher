@@ -10,10 +10,12 @@ import 'package:upcom-api/web/tab/launcher_controller.dart';
 class UpDroidLauncher extends LauncherController {
   static final List<String> names = ['upcom-launcher', 'UpDroid Launcher', 'Launcher'];
 
-  DivElement _containerDiv, _resultsDiv;
+  DivElement _containerDiv, _tabResultsDiv;
   InputElement _searchInput;
   SpanElement _searchIcon;
   Map<String, Map> _tabsInfo;
+  StreamSubscription _searchSub;
+  List<StreamSubscription> _buttonListeners;
 
   UpDroidLauncher() :
   super(UpDroidLauncher.names, 'tabs/upcom-launcher/launcher.css') {
@@ -31,65 +33,62 @@ class UpDroidLauncher extends LauncherController {
       ..classes.addAll(['$refName-search-icon', 'glyphicons', 'glyphicons-search']);
     _searchInput.children.add(_searchIcon);
 
-    _resultsDiv = new DivElement()
+    _tabResultsDiv = new DivElement()
       ..id = '$refName-$id-results'
       ..classes.add('$refName-results');
-    view.content.children.add(_resultsDiv);
+    view.content.children.add(_tabResultsDiv);
   }
 
   void _getTabsInfo(Msg m) => mailbox.ws.send(new Msg('GET_TABS_INFO').toString());
 
   void _receivedTabsInfo(Msg m) {
     _tabsInfo = JSON.decode(m.body);
-    Map<String, Map> tabsInfo = new Map.from(_tabsInfo);
+
+    for (Map<String, String> tabInfo in _tabsInfo.values) {
+      _setUpTabButton(tabInfo);
+    }
+
+    _searchSub = _searchInput.onKeyUp.listen((e) => _handleSearch(_searchInput.value));
 
     // Nice way to do a "forEach" and "then".
-    Future.wait(tabsInfo.values.map((Map<String, String> tabInfo) {
-      Completer c = new Completer();
-      ButtonElement tabButton = new ButtonElement()
-        ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
-        ..classes.addAll(['btn-primary', '$refName-button'])
-        ..text = tabInfo['fullName'];
-      _resultsDiv.children.add(tabButton);
-
-      tabButton.onClick.listen((e) {
-        e.preventDefault();
-        _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', ''));
-      });
-
-      c.complete();
-      return c.future;
-    })).then((_) => _searchInput.onKeyUp.listen((e) => _handleSearch(_searchInput.value)));
+//    Future.wait(_tabsInfo.values.map((Map<String, String> tabInfo) {
+//      Completer c = new Completer();
+//      _setUpTabButton(tabInfo);
+//
+//      c.complete();
+//      return c.future;
+//    })).then((_) => _searchInput.onKeyUp.listen((e) => _handleSearch(_searchInput.value)));
   }
 
   void _handleSearch(String query) {
     Map<String, Map> tabsInfo = new Map.from(_tabsInfo);
 
-    Future.wait(_tabsInfo.keys.map((String key) {
-      Completer c = new Completer();
-      if (!_searchTabInfo(_tabsInfo[key], query)) {
-        tabsInfo.remove(key);
-      }
-      c.complete();
-      return c.future;
-    })).then((_) {
-      _resultsDiv.children = [];
+    for (String tabInfoKey in _tabsInfo.keys) {
+      if (!_searchTabInfo(_tabsInfo[tabInfoKey], query)) tabsInfo.remove(tabInfoKey);
+    }
 
-      tabsInfo.keys.forEach((e) {
-        Map<String, String> tabInfo = tabsInfo[e];
+    // Cancel all the button listeners.
+    // TODO: investigate if this will cause a listener leak.
+    _buttonListeners.forEach((StreamSubscription sub) => sub.cancel());
+    // Clear the results div.
+    _buttonListeners = [];
+    _tabResultsDiv.children = [];
+    // Repopulate the div.
+    tabsInfo.keys.forEach((e) => _setUpTabButton(tabsInfo[e]));
+  }
 
-        ButtonElement tabButton = new ButtonElement()
-          ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
-          ..classes.addAll(['btn-primary', '$refName-button'])
-          ..text = tabInfo['fullName'];
-        _resultsDiv.children.add(tabButton);
+  void _setUpTabButton(Map<String, String> tabInfo) {
+    ButtonElement tabButton = new ButtonElement()
+      ..id = '$refName-$id-tab-button-${tabInfo['refName']}'
+      ..classes.addAll(['btn-primary', '$refName-button'])
+      ..text = tabInfo['fullName'];
+    _tabResultsDiv.children.add(tabButton);
 
-        tabButton.onClick.listen((e) {
-          e.preventDefault();
-          _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', ''));
-        });
-      });
-    });
+    if (_buttonListeners == null) _buttonListeners = [];
+    _buttonListeners.add(tabButton.onClick.listen((e) {
+      e.preventDefault();
+      _requestTab(tabButton.id.replaceFirst('$refName-$id-tab-button-', ''));
+    }));
   }
 
   bool _searchTabInfo(Map<String, String> tabInfo, String query) {
@@ -116,9 +115,8 @@ class UpDroidLauncher extends LauncherController {
   }
 
   void registerEventHandlers() {
-    window.onResize.listen((e) {
-
-    });
+    // window.onResize.listen((e) {
+    // });
   }
 
   Element get elementToFocus => _searchInput;
@@ -130,6 +128,7 @@ class UpDroidLauncher extends LauncherController {
   }
 
   void cleanUp() {
-
+    _searchSub.cancel();
+    _buttonListeners.forEach((StreamSubscription sub) => sub.cancel());
   }
 }
