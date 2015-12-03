@@ -5,7 +5,7 @@ import 'dart:html';
 import 'dart:convert';
 
 import 'package:upcom-api/web/mailbox/mailbox.dart';
-import 'package:upcom-api/web/tab/launcher_controller.dart';
+import 'launcher_controller.dart';
 
 class UpDroidLauncher extends LauncherController {
   static final List<String> names = ['upcom-launcher', 'UpDroid Launcher', 'Launcher'];
