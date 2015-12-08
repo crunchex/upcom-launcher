@@ -5,9 +5,9 @@ import 'dart:html';
 import 'dart:convert';
 
 import 'package:upcom-api/web/mailbox/mailbox.dart';
-import 'launcher_controller.dart';
+import 'package:upcom-api/web/tab/tab_controller.dart';
 
-class UpDroidLauncher extends LauncherController {
+class UpDroidLauncher extends TabController {
   static final List<String> names = ['upcom-launcher', 'UpDroid Launcher', 'Launcher'];
 
   DivElement _containerDiv, _tabResultsDiv;
@@ -18,7 +18,7 @@ class UpDroidLauncher extends LauncherController {
   List<StreamSubscription> _buttonListeners;
 
   UpDroidLauncher() :
-  super(UpDroidLauncher.names, 'tabs/upcom-launcher/launcher.css') {
+  super(UpDroidLauncher.names) {
 
   }
 
@@ -27,7 +27,7 @@ class UpDroidLauncher extends LauncherController {
       ..id = '$refName-$id-search'
       ..classes.add('$refName-search')
       ..placeholder = 'Search';
-    view.content.children.add(_searchInput);
+    content.children.add(_searchInput);
 
     _searchIcon = new SpanElement()
       ..classes.addAll(['$refName-search-icon', 'glyphicons', 'glyphicons-search']);
@@ -36,7 +36,7 @@ class UpDroidLauncher extends LauncherController {
     _tabResultsDiv = new DivElement()
       ..id = '$refName-$id-results'
       ..classes.add('$refName-results');
-    view.content.children.add(_tabResultsDiv);
+    content.children.add(_tabResultsDiv);
   }
 
   void _getTabsInfo(Msg m) => mailbox.ws.send(new Msg('GET_TABS_INFO').toString());
