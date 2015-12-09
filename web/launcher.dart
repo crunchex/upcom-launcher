@@ -10,17 +10,14 @@ import 'package:upcom-api/web/tab/tab_controller.dart';
 class UpDroidLauncher extends TabController {
   static final List<String> names = ['upcom-launcher', 'UpDroid Launcher', 'Launcher'];
 
-  DivElement _containerDiv, _tabResultsDiv;
+  DivElement _tabResultsDiv;
   InputElement _searchInput;
   SpanElement _searchIcon;
   Map<String, Map> _tabsInfo;
   StreamSubscription _searchSub;
   List<StreamSubscription> _buttonListeners;
 
-  UpDroidLauncher() :
-  super(UpDroidLauncher.names) {
-
-  }
+  UpDroidLauncher() : super(UpDroidLauncher.names, PluginType.LAUNCHER);
 
   void setUpController() {
     _searchInput = new InputElement()
