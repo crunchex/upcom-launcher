@@ -115,7 +115,7 @@ class UpDroidLauncher extends TabController {
   void _requestTab(String refName) {
     _searchInput.value = '';
     _updateResults('');
-    mailbox.ws.send(new Msg('REQUEST_TAB', refName).toString());
+    mailbox.ws.send(new Msg('REQUEST_TAB', '$refName:$col').toString());
   }
 
   void registerMailbox() {
