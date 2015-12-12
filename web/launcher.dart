@@ -17,7 +17,7 @@ class UpDroidLauncher extends TabController {
   StreamSubscription _searchSub;
   List<StreamSubscription> _buttonListeners;
 
-  UpDroidLauncher() : super(UpDroidLauncher.names, PluginType.LAUNCHER);
+  UpDroidLauncher() : super(UpDroidLauncher.names, false, false);
 
   void setUpController() {
     _searchInput = new InputElement()
