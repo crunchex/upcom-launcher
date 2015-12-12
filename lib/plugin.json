@@ -1,5 +1,6 @@
 {
   "refName": "upcom-launcher",
   "fullName": "UpDroid Launcher",
-  "shortName": "Launcher"
+  "shortName": "Launcher",
+  "types": ["tab", "panel"]
 }
