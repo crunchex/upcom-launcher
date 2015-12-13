@@ -26,6 +26,10 @@ class UpDroidLauncher extends TabController {
       ..placeholder = 'Search';
     content.children.add(_searchInput);
 
+    if (type == PluginType.PANEL) {
+      _searchInput.classes.add('$refName-search-panel');
+    }
+
     _searchIcon = new SpanElement()
       ..classes.addAll(['$refName-search-icon', 'glyphicons', 'glyphicons-search']);
     _searchInput.children.add(_searchIcon);

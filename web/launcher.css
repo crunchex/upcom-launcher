@@ -19,6 +19,10 @@
     font-family: "Monosten A",monospace;
 }
 
+.upcom-launcher-search-panel {
+    width: 100%;
+}
+
 .upcom-launcher-search:focus {
     box-shadow: none;
     outline: none;
