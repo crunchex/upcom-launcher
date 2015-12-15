@@ -15,7 +15,12 @@ class CmdrLauncher extends Tab {
     mailbox.relay(Tab.upcomName, 1, new Msg('GET_TABS_INFO', '${CmdrLauncher.names[0]}:$id'));
   }
 
+  void _getPanelsInfo(String s) {
+    mailbox.relay(Tab.upcomName, 1, new Msg('GET_PANELS_INFO', '${CmdrLauncher.names[0]}:$id'));
+  }
+
   void _sendTabsInfo(String s) => mailbox.send(new Msg('SEND_TABS_INFO', s));
+  void _sendPanelsInfo(String s) => mailbox.send(new Msg('SEND_PANELS_INFO', s));
 
   void _requestTab(String m) {
     mailbox.relay(Tab.upcomName, -1, new Msg('REQUEST_TAB', '${names[0]}:$id:$m'));
@@ -27,7 +32,9 @@ class CmdrLauncher extends Tab {
 
   void registerMailbox() {
     mailbox.registerMessageHandler('GET_TABS_INFO', _getTabsInfo);
+    mailbox.registerMessageHandler('GET_PANELS_INFO', _getPanelsInfo);
     mailbox.registerMessageHandler('SEND_TABS_INFO', _sendTabsInfo);
+    mailbox.registerMessageHandler('SEND_PANELS_INFO', _sendPanelsInfo);
     mailbox.registerMessageHandler('REQUEST_TAB', _requestTab);
     mailbox.registerMessageHandler('REQUEST_FULFILLED', _requestFulfilled);
   }

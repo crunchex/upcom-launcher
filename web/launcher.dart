@@ -40,7 +40,13 @@ class UpDroidLauncher extends TabController {
     content.children.add(_tabResultsDiv);
   }
 
-  void _getTabsInfo(Msg m) => mailbox.ws.send(new Msg('GET_TABS_INFO').toString());
+  void _getPluginsInfo(Msg m) {
+    if (type == PluginType.PANEL) {
+      mailbox.ws.send(new Msg('GET_PANELS_INFO').toString());
+    } else {
+      mailbox.ws.send(new Msg('GET_TABS_INFO').toString());
+    }
+  }
 
   void _receivedTabsInfo(Msg m) {
     _tabsInfo = JSON.decode(m.body);
@@ -123,8 +129,9 @@ class UpDroidLauncher extends TabController {
   }
 
   void registerMailbox() {
-    mailbox.registerWebSocketEvent(EventType.ON_OPEN, 'TAB_READY', _getTabsInfo);
+    mailbox.registerWebSocketEvent(EventType.ON_OPEN, 'TAB_READY', _getPluginsInfo);
     mailbox.registerWebSocketEvent(EventType.ON_MESSAGE, 'SEND_TABS_INFO', _receivedTabsInfo);
+    mailbox.registerWebSocketEvent(EventType.ON_MESSAGE, 'SEND_PANELS_INFO', _receivedTabsInfo);
   }
 
   void registerEventHandlers() {
